@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Company;
+use App\Renter;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
@@ -63,10 +65,31 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
+        $newUser = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
+            'role' => 'company'
         ]);
+        $allCompanies= User::where('email',$data['email'])->where('role','company')->get();
+//        dd($allCompanies);
+
+        $renter = User::where('email', $data['email'])->where('role','renter')->get();
+//        dd($renter);
+
+        foreach($allCompanies as $company){
+            Company::create([
+                'owner_id' => $company -> id,
+                'name' => $company -> name
+            ]);
+        }
+
+        foreach($renter as $r){
+            Renter::create([
+                'renter_id' => $r -> id,
+                'name' => $r -> name
+            ]);
+        }
+        return $newUser;
     }
 }

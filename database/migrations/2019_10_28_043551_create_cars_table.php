@@ -19,14 +19,10 @@ class CreateCarsTable extends Migration
             $table->string('brand');
             $table->string('img');
             $table->string('carName');
-            $table->boolean('isbooking')->default(false);
-            $table->dateTime('booking_start_at');
-            $table->dateTime('booking_end_at');
-            $table->string('user')->default(null);
             $table->unsignedBigInteger('owner_id');
-            $table->foreign('owner_id')->references('id')->on('cars');
+            $table->string('status');
+            $table->foreign('owner_id')->references('owner_id')->on('companies');
             $table->timestamps();
-
         });
     }
 
